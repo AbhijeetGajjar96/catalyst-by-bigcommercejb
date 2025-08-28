@@ -1,6 +1,7 @@
 // @ts-check
 const { generateSchema, generateOutput } = require('@gql.tada/cli-utils');
 const { join } = require('path');
+const fs = require('fs');
 
 const graphqlApiDomain = process.env.BIGCOMMERCE_GRAPHQL_API_DOMAIN ?? 'mybigcommerce.com';
 
@@ -47,19 +48,29 @@ const generate = async () => {
     console.log('Starting GraphQL schema generation...');
     console.log('Endpoint:', getEndpoint());
     
+    const schemaPath = join(__dirname, '../schema.graphql');
+    console.log('Schema will be created at:', schemaPath);
+    
     await generateSchema({
       input: getEndpoint(),
       headers: { Authorization: `Bearer ${getToken()}` },
-      output: join(__dirname, '../schema.graphql'),
+      output: schemaPath,
       tsconfig: undefined,
     });
 
     console.log('Schema generated successfully!');
     
+    // Verify the schema file exists
+    if (fs.existsSync(schemaPath)) {
+      console.log('Schema file confirmed to exist at:', schemaPath);
+    } else {
+      throw new Error('Schema file was not created');
+    }
+    
     await generateOutput({
       disablePreprocessing: false,
       output: undefined,
-      tsconfig: undefined,
+      tsconfig: join(__dirname, '../tsconfig.json'),
     });
     
     console.log('Output generated successfully!');
@@ -82,9 +93,9 @@ type Mutation {
   _: Boolean
 }`;
     
-    const fs = require('fs');
-    fs.writeFileSync(join(__dirname, '../schema.graphql'), fallbackSchema);
-    console.log('Created fallback schema file');
+    const schemaPath = join(__dirname, '../schema.graphql');
+    fs.writeFileSync(schemaPath, fallbackSchema);
+    console.log('Created fallback schema file at:', schemaPath);
     
     // Don't exit with error - let the build continue
     // process.exit(1);
