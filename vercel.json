@@ -1,5 +1,5 @@
 {
   "framework": "nextjs",
-  "buildCommand": "cd core && npm install && npm run build",
+  "buildCommand": "npm install && npm run build",
   "outputDirectory": "core/.next"
 }
