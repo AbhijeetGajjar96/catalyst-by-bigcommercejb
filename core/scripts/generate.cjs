@@ -60,14 +60,19 @@ const generate = async () => {
     console.log('Absolute schema path:', require('path').resolve(schemaPath));
     
     console.log('Attempting to generate schema...');
-    await generateSchema({
-      input: endpoint,
-      headers: { Authorization: `Bearer ${getToken()}` },
-      output: schemaPath,
-      tsconfig: undefined,
-    });
-
-    console.log('Schema generated successfully!');
+    try {
+      await generateSchema({
+        input: endpoint,
+        headers: { Authorization: `Bearer ${getToken()}` },
+        output: schemaPath,
+        tsconfig: undefined,
+      });
+      console.log('Schema generated successfully!');
+    } catch (schemaError) {
+      console.error('generateSchema failed with error:', schemaError.message);
+      console.error('Schema error details:', schemaError);
+      throw new Error(`Schema generation failed: ${schemaError.message}`);
+    }
     
     // Verify the schema file exists
     if (fs.existsSync(schemaPath)) {
