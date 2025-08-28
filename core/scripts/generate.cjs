@@ -74,6 +74,9 @@ const generate = async () => {
       throw new Error(`Schema generation failed: ${schemaError.message}`);
     }
 
+    console.log('=== AFTER generateSchema - checking if we reach this point ===');
+    console.log('Schema generation completed, now checking file...');
+    
     // Wait a moment for file system to sync
     console.log('Waiting for file system to sync...');
     await new Promise(resolve => setTimeout(resolve, 1000));
