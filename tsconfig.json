@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "~/*": [
+        "catalyst-local/core/*"
+      ]
+    },
+    "strict": true,
+    "strictNullChecks": true
+  },
+  "exclude": [
+    "node_modules",
+    "**/.next/**"
+  ]
+}
+
+
