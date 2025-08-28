@@ -34,8 +34,7 @@ const getEndpoint = () => {
   const storeHash = getStoreHash();
   const channelId = getChannelId();
 
-  // Not all sites have the channel-specific canonical URL backfilled.
-  // Wait till MSF-2643 is resolved before removing and simplifying the endpoint logic.
+  // For channel ID 1, use the base store URL without channel suffix
   if (!channelId || channelId === '1') {
     return `https://store-${storeHash}.${graphqlApiDomain}/graphql`;
   }
