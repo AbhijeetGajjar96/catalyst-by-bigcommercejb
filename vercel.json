@@ -1,6 +1,6 @@
 {
   "framework": "nextjs",
-  "installCommand": "pnpm -C core install --no-frozen-lockfile",
-  "buildCommand": "pnpm -C core run build",
-  "outputDirectory": "core/.next"
+  "rootDirectory": "core",
+  "installCommand": "pnpm install --no-frozen-lockfile",
+  "buildCommand": "pnpm run build"
 }
