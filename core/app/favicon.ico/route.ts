@@ -1,49 +1,26 @@
 /* eslint-disable check-file/folder-naming-convention */
 /*
- * Proxy to the store's favicon URL
+ * Static favicon response
  *
- * If you would prefer to put a favicon image directly in your codebase,
- * delete this route folder and follow this guide:
- *
- * https://nextjs.org/docs/app/api-reference/file-conventions/metadata/app-icons
- *
+ * This route provides a simple favicon without requiring BigCommerce API calls.
+ * You can replace this with your own favicon image or restore the BigCommerce integration later.
  */
 
-import { getChannelIdFromLocale } from '~/channels.config';
-import { client } from '~/client';
-import { graphql } from '~/client/graphql';
-import { defaultLocale } from '~/i18n/locales';
-
-const GetFaviconQuery = graphql(`
-  query GetFaviconQuery {
-    site {
-      settings {
-        faviconUrl
-      }
-    }
-  }
-`);
-
 export const GET = async () => {
-  const { data } = await client.fetch({
-    document: GetFaviconQuery,
-    channelId: getChannelIdFromLocale(defaultLocale),
-  });
+  // Return a simple 1x1 transparent PNG as favicon
+  // This prevents build errors while providing a basic favicon
+  const transparentPixel = new Uint8Array([
+    0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00, 0x0d,
+    0x49, 0x48, 0x44, 0x52, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01,
+    0x08, 0x06, 0x00, 0x00, 0x00, 0x1f, 0x15, 0xc4, 0x89, 0x00, 0x00, 0x00,
+    0x0a, 0x49, 0x44, 0x41, 0x54, 0x78, 0x9c, 0x63, 0x00, 0x01, 0x00, 0x00,
+    0x05, 0x00, 0x01, 0x0d, 0x0a, 0x2d, 0xb4, 0x00, 0x00, 0x00, 0x00, 0x49,
+    0x45, 0x4e, 0x44, 0xae, 0x42, 0x60, 0x82
+  ]);
 
-  const faviconUrl = data.site.settings?.faviconUrl;
-
-  if (!faviconUrl) {
-    return new Response(null, {
-      status: 404,
-    });
-  }
-
-  // fetch the favicon URL and return the data directly (will be statically cached at build time)
-  const faviconData = await fetch(faviconUrl).then((res) => res.arrayBuffer());
-
-  return new Response(faviconData, {
+  return new Response(transparentPixel, {
     headers: {
-      'Content-Type': 'image/x-icon',
+      'Content-Type': 'image/png',
     },
   });
 };
