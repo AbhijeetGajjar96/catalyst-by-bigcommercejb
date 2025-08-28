@@ -96,6 +96,7 @@ const generate = async () => {
     console.log('Directory contents of:', dirPath);
     try {
       const files = fs.readdirSync(dirPath);
+      console.log('All files in directory:', files);
       files.forEach(file => {
         if (file.includes('.graphql') || file.includes('schema')) {
           console.log('Found relevant file:', file);
@@ -103,6 +104,23 @@ const generate = async () => {
       });
     } catch (dirError) {
       console.error('Error reading directory:', dirError.message);
+    }
+    
+    // Also check the current working directory
+    console.log('Current working directory:', process.cwd());
+    console.log('Script directory (__dirname):', __dirname);
+    console.log('Target schema path:', schemaPath);
+    console.log('Resolved schema path:', require('path').resolve(schemaPath));
+    
+    // Try to create a test file to verify write permissions
+    const testPath = join(__dirname, '../test-write.txt');
+    try {
+      fs.writeFileSync(testPath, 'test');
+      console.log('Test file created successfully at:', testPath);
+      fs.unlinkSync(testPath);
+      console.log('Test file cleaned up');
+    } catch (testError) {
+      console.error('Test file creation failed:', testError.message);
     }
     
     if (relativeExists || absoluteExists) {
