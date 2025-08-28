@@ -27,7 +27,7 @@
         "schemas": [
           {
             "name": "bigcommerce",
-            "schema": "./bigcommerce.graphql",
+            "schema": "./schema.graphql",
             "tadaOutputLocation": "./bigcommerce-graphql.d.ts"
           }
         ]
