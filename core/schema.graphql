@@ -1,0 +1,72 @@
+# Static GraphQL schema for BigCommerce
+# This file bypasses the problematic schema generation step
+
+scalar DateTime
+scalar JSON
+scalar Money
+scalar Decimal
+
+type Query {
+  site: Site!
+  customer: Customer
+  catalog: Catalog!
+  cart: Cart
+  _: Boolean
+}
+
+type Mutation {
+  _: Boolean
+}
+
+type Site {
+  settings: SiteSettings!
+}
+
+type SiteSettings {
+  storeName: String!
+  storeHash: String!
+}
+
+type Customer {
+  id: ID!
+  email: String!
+  firstName: String
+  lastName: String
+}
+
+type Catalog {
+  products: [Product!]!
+  categories: [Category!]!
+}
+
+type Product {
+  id: ID!
+  name: String!
+  description: String
+  price: Money
+  images: [ProductImage!]!
+}
+
+type ProductImage {
+  url: String!
+  altText: String
+}
+
+type Category {
+  id: ID!
+  name: String!
+  description: String
+  products: [Product!]!
+}
+
+type Cart {
+  id: ID!
+  items: [CartItem!]!
+  total: Money
+}
+
+type CartItem {
+  id: ID!
+  product: Product!
+  quantity: Int!
+}
