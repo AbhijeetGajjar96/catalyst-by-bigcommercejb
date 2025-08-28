@@ -1,5 +1,5 @@
 {
-  "buildCommand": "pnpm install --prefix core --no-frozen-lockfile && pnpm run build --prefix core",
+  "buildCommand": "sh -c 'cd core && pnpm install --no-frozen-lockfile && pnpm run build'",
   "outputDirectory": "core/.next",
   "framework": "nextjs"
 }
