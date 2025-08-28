@@ -1,29 +1,13 @@
 /* eslint-disable check-file/folder-naming-convention */
 /*
- * Robots.txt route
+ * Static robots.txt route
  *
- * This route pulls robots.txt content from the channel settings.
- *
- * If you would like to configure this in code instead, delete this file and follow this guide:
+ * This route provides a basic robots.txt without requiring BigCommerce API calls.
+ * You can customize this content or restore the BigCommerce integration later.
  *
  * https://nextjs.org/docs/app/api-reference/file-conventions/metadata/robots
  *
  */
-
-import { getChannelIdFromLocale } from '~/channels.config';
-import { client } from '~/client';
-import { graphql } from '~/client/graphql';
-import { defaultLocale } from '~/i18n/locales';
-
-const RobotsTxtQuery = graphql(`
-  query RobotsTxtQuery {
-    site {
-      settings {
-        robotsTxt
-      }
-    }
-  }
-`);
 
 function parseUrl(url?: string): URL {
   let incomingUrl = '';
@@ -41,13 +25,18 @@ const baseUrl = parseUrl(
 );
 
 export const GET = async () => {
-  const { data } = await client.fetch({
-    document: RobotsTxtQuery,
-    channelId: getChannelIdFromLocale(defaultLocale),
-    fetchOptions: { cache: 'no-store' }, // disable caching to get the latest robots.txt at build time
-  });
+  // Static robots.txt content - customize as needed
+  const robotsTxt = `User-agent: *
+Allow: /
 
-  const robotsTxt = `${data.site.settings?.robotsTxt ?? ''}\nSitemap: ${baseUrl.origin}/sitemap.xml\n`;
+# Sitemap
+Sitemap: ${baseUrl.origin}/sitemap.xml
+
+# Disallow admin and private areas
+Disallow: /admin/
+Disallow: /api/
+Disallow: /_next/
+Disallow: /static/`;
 
   return new Response(robotsTxt, {
     headers: {
