@@ -60,22 +60,38 @@ const generate = async () => {
     console.log('Absolute schema path:', require('path').resolve(schemaPath));
     
     console.log('Attempting to generate schema...');
+    
+    // Wrap in a more comprehensive error handler
+    let schemaGenerationSuccess = false;
     try {
-      await generateSchema({
+      console.log('Calling generateSchema with:', {
+        input: endpoint,
+        output: schemaPath,
+        hasToken: !!getToken()
+      });
+      
+      const result = await generateSchema({
         input: endpoint,
         headers: { Authorization: `Bearer ${getToken()}` },
         output: schemaPath,
         tsconfig: undefined,
       });
+      
+      console.log('generateSchema returned:', result);
+      schemaGenerationSuccess = true;
       console.log('Schema generated successfully!');
     } catch (schemaError) {
-      console.error('generateSchema failed with error:', schemaError.message);
-      console.error('Schema error details:', schemaError);
+      console.error('=== generateSchema ERROR CAUGHT ===');
+      console.error('Error type:', schemaError.constructor.name);
+      console.error('Error message:', schemaError.message);
+      console.error('Error stack:', schemaError.stack);
+      console.error('Full error object:', JSON.stringify(schemaError, null, 2));
       throw new Error(`Schema generation failed: ${schemaError.message}`);
     }
 
     console.log('=== AFTER generateSchema - checking if we reach this point ===');
     console.log('Schema generation completed, now checking file...');
+    console.log('Schema generation success flag:', schemaGenerationSuccess);
     
     // Wait a moment for file system to sync
     console.log('Waiting for file system to sync...');
