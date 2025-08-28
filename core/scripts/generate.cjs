@@ -73,15 +73,46 @@ const generate = async () => {
       console.error('Schema error details:', schemaError);
       throw new Error(`Schema generation failed: ${schemaError.message}`);
     }
+
+    // Wait a moment for file system to sync
+    console.log('Waiting for file system to sync...');
+    await new Promise(resolve => setTimeout(resolve, 1000));
     
-    // Verify the schema file exists
-    if (fs.existsSync(schemaPath)) {
-      const stats = fs.statSync(schemaPath);
-      console.log('Schema file confirmed to exist at:', schemaPath);
+    // Verify the schema file exists with multiple path checks
+    console.log('Verifying schema file existence...');
+    const absoluteSchemaPath = require('path').resolve(schemaPath);
+    console.log('Checking relative path:', schemaPath);
+    console.log('Checking absolute path:', absoluteSchemaPath);
+    
+    // Check both relative and absolute paths
+    const relativeExists = fs.existsSync(schemaPath);
+    const absoluteExists = fs.existsSync(absoluteSchemaPath);
+    
+    console.log('Relative path exists:', relativeExists);
+    console.log('Absolute path exists:', absoluteExists);
+    
+    // List directory contents to see what's actually there
+    const dirPath = join(__dirname, '..');
+    console.log('Directory contents of:', dirPath);
+    try {
+      const files = fs.readdirSync(dirPath);
+      files.forEach(file => {
+        if (file.includes('.graphql') || file.includes('schema')) {
+          console.log('Found relevant file:', file);
+        }
+      });
+    } catch (dirError) {
+      console.error('Error reading directory:', dirError.message);
+    }
+    
+    if (relativeExists || absoluteExists) {
+      const actualPath = relativeExists ? schemaPath : absoluteSchemaPath;
+      const stats = fs.statSync(actualPath);
+      console.log('Schema file confirmed to exist at:', actualPath);
       console.log('File size:', stats.size, 'bytes');
       console.log('File permissions:', stats.mode.toString(8));
     } else {
-      throw new Error(`Schema file was not created at ${schemaPath}`);
+      throw new Error(`Schema file was not created. Checked paths: ${schemaPath}, ${absoluteSchemaPath}`);
     }
     
     console.log('Attempting to generate output...');
