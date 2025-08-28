@@ -1,4 +1,3 @@
-// @ts-check
 const { generateSchema, generateOutput } = require('@gql.tada/cli-utils');
 const { join } = require('path');
 const fs = require('fs');
