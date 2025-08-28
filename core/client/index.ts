@@ -28,16 +28,23 @@ const getLocale = async () => {
 export const client = createClient({
   storefrontToken: process.env.BIGCOMMERCE_STOREFRONT_TOKEN ?? '',
   storeHash: process.env.BIGCOMMERCE_STORE_HASH ?? '',
-  channelId: process.env.BIGCOMMERCE_CHANNEL_ID,
+  channelId: process.env.BIGCOMMERCE_CHANNEL_ID || '1',
   backendUserAgentExtensions: backendUserAgent,
   logger:
     (process.env.NODE_ENV !== 'production' && process.env.CLIENT_LOGGER !== 'false') ||
     process.env.CLIENT_LOGGER === 'true',
   getChannelId: async (defaultChannelId: string) => {
-    const locale = await getLocale();
-
-    // We use the default channelId as a fallback, but it is not ideal in some scenarios.
-    return getChannelIdFromLocale(locale) ?? defaultChannelId;
+    // Only try to get locale if we're in a runtime context
+    if (typeof window === 'undefined' && process.env.NODE_ENV !== 'production') {
+      try {
+        const locale = await getLocale();
+        return getChannelIdFromLocale(locale) ?? defaultChannelId;
+      } catch {
+        // Fall back to default channel ID during build
+        return defaultChannelId;
+      }
+    }
+    return defaultChannelId;
   },
   beforeRequest: async (fetchOptions) => {
     // We can't serialize a `Headers` object within this method so we have to opt into using a plain object
