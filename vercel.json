@@ -1,5 +1,5 @@
 {
   "framework": "nextjs",
-  "buildCommand": "pnpm install --filter=@bigcommerce/catalyst-core && pnpm run build --filter=@bigcommerce/catalyst-core",
+  "buildCommand": "pnpm install && pnpm --filter @bigcommerce/catalyst-core run build",
   "outputDirectory": "core/.next"
 }
