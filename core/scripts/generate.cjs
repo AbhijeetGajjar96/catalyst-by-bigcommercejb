@@ -45,14 +45,24 @@ const getEndpoint = () => {
 
 const generate = async () => {
   try {
-    console.log('Starting GraphQL schema generation...');
-    console.log('Endpoint:', getEndpoint());
+    console.log('=== Starting GraphQL schema generation ===');
+    console.log('Current directory:', __dirname);
+    console.log('Environment variables:');
+    console.log('- BIGCOMMERCE_STORE_HASH:', process.env.BIGCOMMERCE_STORE_HASH ? 'SET' : 'NOT SET');
+    console.log('- BIGCOMMERCE_CHANNEL_ID:', process.env.BIGCOMMERCE_CHANNEL_ID ? 'SET' : 'NOT SET');
+    console.log('- BIGCOMMERCE_GRAPHQL_API_DOMAIN:', process.env.BIGCOMMERCE_GRAPHQL_API_DOMAIN || 'DEFAULT');
+    console.log('- BIGCOMMERCE_STOREFRONT_TOKEN:', process.env.BIGCOMMERCE_STOREFRONT_TOKEN ? 'SET' : 'NOT SET');
+    
+    const endpoint = getEndpoint();
+    console.log('GraphQL endpoint:', endpoint);
     
     const schemaPath = join(__dirname, '../schema.graphql');
     console.log('Schema will be created at:', schemaPath);
+    console.log('Absolute schema path:', require('path').resolve(schemaPath));
     
+    console.log('Attempting to generate schema...');
     await generateSchema({
-      input: getEndpoint(),
+      input: endpoint,
       headers: { Authorization: `Bearer ${getToken()}` },
       output: schemaPath,
       tsconfig: undefined,
@@ -62,11 +72,15 @@ const generate = async () => {
     
     // Verify the schema file exists
     if (fs.existsSync(schemaPath)) {
+      const stats = fs.statSync(schemaPath);
       console.log('Schema file confirmed to exist at:', schemaPath);
+      console.log('File size:', stats.size, 'bytes');
+      console.log('File permissions:', stats.mode.toString(8));
     } else {
-      throw new Error('Schema file was not created');
+      throw new Error(`Schema file was not created at ${schemaPath}`);
     }
     
+    console.log('Attempting to generate output...');
     await generateOutput({
       disablePreprocessing: false,
       output: undefined,
@@ -74,8 +88,12 @@ const generate = async () => {
     });
     
     console.log('Output generated successfully!');
+    console.log('=== Schema generation completed successfully ===');
   } catch (error) {
-    console.error('Schema generation failed:', error.message);
+    console.error('=== Schema generation failed ===');
+    console.error('Error type:', error.constructor.name);
+    console.error('Error message:', error.message);
+    console.error('Error stack:', error.stack);
     
     // Create a minimal fallback schema to prevent build failure
     const fallbackSchema = `# Fallback GraphQL schema
@@ -93,12 +111,19 @@ type Mutation {
   _: Boolean
 }`;
     
-    const schemaPath = join(__dirname, '../schema.graphql');
-    fs.writeFileSync(schemaPath, fallbackSchema);
-    console.log('Created fallback schema file at:', schemaPath);
+    try {
+      const schemaPath = join(__dirname, '../schema.graphql');
+      fs.writeFileSync(schemaPath, fallbackSchema);
+      console.log('Created fallback schema file at:', schemaPath);
+      console.log('Fallback schema size:', fallbackSchema.length, 'bytes');
+    } catch (fallbackError) {
+      console.error('Failed to create fallback schema:', fallbackError.message);
+      // If we can't even create the fallback, we need to exit
+      process.exit(1);
+    }
     
     // Don't exit with error - let the build continue
-    // process.exit(1);
+    console.log('=== Continuing with fallback schema ===');
   }
 };
 
