@@ -1,5 +1,5 @@
 {
   "framework": "nextjs",
-  "buildCommand": "npm install && npm run build --prefix core",
+  "buildCommand": "pnpm install && pnpm run build --recursive --filter=@bigcommerce/catalyst-core",
   "outputDirectory": "core/.next"
 }
