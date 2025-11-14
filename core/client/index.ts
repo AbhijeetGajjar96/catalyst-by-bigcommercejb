@@ -1,11 +1,12 @@
-import { BigCommerceAuthError, createClient } from '@bigcommerce/catalyst-client';
-import { headers } from 'next/headers';
+// Temporarily commented out to allow build without @bigcommerce/catalyst-client
+// import { BigCommerceAuthError, createClient } from '@bigcommerce/catalyst-client';
+// import { headers } from 'next/headers';
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
-import { redirect } from 'next/navigation';
-import { getLocale as getServerLocale } from 'next-intl/server';
+// import { redirect } from 'next/navigation';
+// import { getLocale as getServerLocale } from 'next-intl/server';
 
-import { getChannelIdFromLocale } from '../channels.config';
-import { backendUserAgent } from '../userAgent';
+// import { getChannelIdFromLocale } from '../channels.config';
+// import { backendUserAgent } from '../userAgent';
 
 // Temporarily disabled to unblock build
 // const getLocale = async () => {
