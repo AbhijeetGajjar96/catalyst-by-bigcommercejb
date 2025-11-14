@@ -77,6 +77,26 @@ import { backendUserAgent } from '../userAgent';
 // });
 
 // Temporary placeholder client to prevent build errors
+// This provides mock data during build time when the real client isn't available
 export const client = {
-  // Add placeholder methods as needed
+  fetch: async ({ document }: { document: any }) => {
+    // Return mock data structure that matches typical BigCommerce GraphQL responses
+    return {
+      data: {
+        site: {
+          settings: {
+            contact: {
+              phone: '+1-555-0123',
+              email: 'support@example.com',
+            },
+            statusMessage: 'We are currently performing maintenance. Please check back soon.',
+            logo: {
+              url: '/logo.png',
+              altText: 'Store Logo',
+            },
+          },
+        },
+      },
+    };
+  },
 } as any;
