@@ -1,0 +1,20 @@
+{
+  "locales": [
+    {
+      "code": "en",
+      "isDefault": true
+    },
+    {
+      "code": "es",
+      "isDefault": false
+    }
+  ],
+  "urls": {
+    "vanityUrl": "https://store.example.com",
+    "cdnUrl": "https://cdn.example.com",
+    "checkoutUrl": "https://checkout.example.com",
+    "cdnUrls": [
+      "https://cdn.example.com"
+    ]
+  }
+}

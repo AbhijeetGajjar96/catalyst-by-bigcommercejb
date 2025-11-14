@@ -1,0 +1,12 @@
+{
+  "name": "catalyst-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "packageManager": "pnpm@10.14.0",
+  "scripts": {
+    "build": "pnpm --filter @bigcommerce/catalyst-core run build",
+    "build:client": "pnpm --filter @bigcommerce/catalyst-client run build",
+    "dev": "pnpm --filter @bigcommerce/catalyst-core run dev"
+  }
+}
+

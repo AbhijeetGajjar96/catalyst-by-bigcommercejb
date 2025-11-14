@@ -1,0 +1,7 @@
+{
+  "name": "@bigcommerce/eslint-config-catalyst",
+  "version": "1.0.0",
+  "private": true,
+  "main": "index.js"
+}
+
